@@ -39,30 +39,27 @@
         <p>Your response has been received.</p>
     </div>
 
-    <!-- Silent Zapier forwarding logic (no visible change) -->
+    <!-- Silent forwarding to your secure proxy -->
     <script>
+      // Read query parameters from the URL
       const params = new URLSearchParams(window.location.search);
       const leadId = params.get("lead_id") || "";
       const builderEmail = params.get("builder_email") || "";
       const action = (params.get("action") || "").toLowerCase();
 
-      // Map action to Zapier webhook URL
-      const webhookMap = {
-        accept: "https://hooks.zapier.com/hooks/catch/25609825/ufbjn4n/",
-        reject: "https://hooks.zapier.com/hooks/catch/25609825/uf394vf/",
-        moretime: "https://hooks.zapier.com/hooks/catch/25609825/uf39wot/"
-      };
+      // Your secure Pipedream proxy URL
+      const proxyUrl = "https://eoxeox0k0c9i4bx.m.pipedream.net";
 
-      const webhookUrl = webhookMap[action];
-
-      if (webhookUrl && leadId) {
-        const url = `${webhookUrl}?lead_id=${encodeURIComponent(
+      if (proxyUrl && leadId && action) {
+        const url = `${proxyUrl}?lead_id=${encodeURIComponent(
           leadId
-        )}&builder_email=${encodeURIComponent(builderEmail)}`;
+        )}&builder_email=${encodeURIComponent(
+          builderEmail
+        )}&action=${encodeURIComponent(action)}`;
 
-        // Fire the Zapier webhook silently. Builder sees only this page.
+        // Fire the proxy silently – builder only sees this page
         fetch(url, { method: "GET" }).catch(() => {
-          // Even if the webhook fails, we don’t show an error to the builder.
+          // We deliberately ignore errors here so the builder never sees an error screen.
         });
       }
     </script>
